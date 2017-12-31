@@ -3,8 +3,10 @@
 # This software is a part of ISAR.
 # Copyright (C) 2015-2017 ilbers GmbH
 
-CONSOLE_OUTPUT=/tmp/isar_console
-PID_FILE=/tmp/qemu.pid
+TMPDIR=tmp
+TESTDIR=$TMPDIR/test
+CONSOLE_OUTPUT=$TESTDIR/isar_console
+PID_FILE=$TESTDIR/qemu_pid
 
 check_output() {
     str=$(tail -1 $CONSOLE_OUTPUT)
@@ -31,10 +33,20 @@ run_test () {
     # Check output
     check_output
 
-    # Clean up test artifacts
-    rm $CONSOLE_OUTPUT
-    rm $PID_FILE
+    # Keep test artifacts for debugging:
+    # - $CONSOLE_OUTPUT
+    # - $PID_FILE
 }
+
+
+# We expect to be called in Isar build directory, check for that
+# TODO: A better way to determine whether we are in the build directory?
+if [ ! -d "$TMPDIR" ]; then
+    echo "$0: ERROR: `readlink -f $TMPDIR` doesn't exist" >&2
+    echo "$0 should be executed from Isar build directory" >&2
+    exit $RC_UNRESOLVED
+fi
+mkdir -p "$TESTDIR"
 
 # ARM machine
 run_test arm wheezy
