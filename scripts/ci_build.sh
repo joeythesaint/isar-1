@@ -1,9 +1,9 @@
+#!/bin/sh
+#
 # Script for Jenkins build
 #
 # Alexander Smirnov <asmirnov@ilbers.de>
 # Copyright (c) 2016-2017 ilbers GmbH
-
-#!/bin/sh
 
 # Export $PATH to use 'parted' tool
 export PATH=$PATH:/sbin
@@ -19,7 +19,7 @@ cd $(dirname $0)/..
 if [ ! -d /build/$WORKSPACE/$GIT_COMMIT ]; then
         mkdir -p /build/$WORKSPACE/$GIT_COMMIT
 fi
-source isar-init-build-env /build/$WORKSPACE/$GIT_COMMIT
+. ./isar-init-build-env /build/$WORKSPACE/$GIT_COMMIT
 
 # Start build for all possible configurations
 bitbake \
