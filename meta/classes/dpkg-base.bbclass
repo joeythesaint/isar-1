@@ -41,7 +41,7 @@ do_build() {
         if ! grep -q ${BUILDCHROOT_DIR}/isar-apt /proc/mounts; then \
             mount --bind ${DEPLOY_DIR_APT}/${DISTRO} ${BUILDCHROOT_DIR}/isar-apt; \
             mount --bind ${DL_DIR} ${BUILDCHROOT_DIR}/downloads; \
-            mount -t devtmpfs -o mode=0755,nosuid devtmpfs ${BUILDCHROOT_DIR}/dev; \
+            mount --bind -o ro /dev ${BUILDCHROOT_DIR}/dev; \
             mount -t proc none ${BUILDCHROOT_DIR}/proc; \
         fi'
 
