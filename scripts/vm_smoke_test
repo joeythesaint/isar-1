@@ -57,21 +57,32 @@ run_test () {
 
     # Start QEMU with Isar image
     start_vm -a $ARCH -d $DISTRO -o $CONSOLE_OUTPUT -p $PID_FILE > /dev/null 2>&1 &
-    sleep 60
-    kill `cat $PID_FILE`
+    sleep 5
 
-    FAIL=0
+    if [ -z `ps -p $! -o pid=` ]; then
+        echo "QEMU start: FAILED"
+        RET=$ES_FAIL
+        echo "Command output:\n8<--"
+        start_vm -a $ARCH -d $DISTRO -o $CONSOLE_OUTPUT -p $PID_FILE
+        echo "\n8<--"
+    else
+        sleep 60
+        kill `cat $PID_FILE`
 
-    # Check login prompt
-    check_login_prompt
+        FAIL=0
 
-    # Check kernel module
-    check_example_module
+        # Check login prompt
+        check_login_prompt
 
-    [ $VERBOSE -eq 1 -o $FAIL -eq 1 ] && dump_boot_log
+        # Check kernel module
+        check_example_module
 
-    # Clean up test artifacts
-    rm $CONSOLE_OUTPUT
+        [ $VERBOSE -eq 1 -o $FAIL -eq 1 ] && dump_boot_log
+
+        # Clean up test artifacts
+        rm $CONSOLE_OUTPUT
+    fi
+
     rm $PID_FILE
 }
 
